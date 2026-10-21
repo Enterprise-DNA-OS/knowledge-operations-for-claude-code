@@ -1,11 +1,58 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "article-dossier",
+    "title": "Article review dossier",
+    "for_each": "select id,title as name from articles order by title",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Control record",
+        "sql": "select * from article_register where id=$1"
+      },
+      {
+        "title": "Revision text",
+        "sql": "select version,body,editor,note,created_at from revisions where article_id=$1 order by version"
+      },
+      {
+        "title": "Review evidence",
+        "sql": "select version,reviewer,decision,evidence,created_at from reviews where article_id=$1 order by created_at"
+      },
+      {
+        "title": "Reader corrections",
+        "sql": "select note,status,resolution from feedback where article_id=$1"
+      }
+    ]
+  },
+  {
+    "name": "owner-review",
+    "title": "Owner review pack",
+    "for_each": "select id,name from authors order by name",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Articles",
+        "sql": "select title,status,review_due,privacy_class from articles where owner_id=$1 order by review_due nulls first"
+      },
+      {
+        "title": "Open corrections",
+        "sql": "select a.title,f.note,f.priority from feedback f join articles a on a.id=f.article_id where a.owner_id=$1 and f.status='open'"
+      }
+    ]
+  },
+  {
+    "name": "privacy-review",
+    "title": "Knowledge privacy review",
+    "for_each": "select id,name from collections",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Personal information including archived records",
+        "sql": "select title,status,purpose,retention_review,privacy_checked_at from articles where collection_id=$1 and privacy_class='personal'"
+      },
+      {
+        "title": "Checks requiring a person",
+        "sql": "select c.title,c.rule,c.finding,c.source from compliance_findings c join articles a on a.id=c.id where a.collection_id=$1"
+      }
     ]
   }
 ]

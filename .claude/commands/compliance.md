@@ -1,11 +1,13 @@
 ---
-description: Check the records against the rules this industry lives under (the ones listed in docs/compliance.md) and report what is missing, late, or about to breach, with the rule cited.
+description: Check recorded privacy evidence and house rules
 ---
 
-1. Read `docs/compliance.md`. Each rule has a name, the source it comes from, what a breach looks like in the data, and the SQL or command that finds it.
-2. Run each check. Use the CLI's `--json` output or a direct query through `scripts/lib/db.mjs`.
-3. Report as a table: rule, count, the worst example (name and days), the source. Order by severity: breached first, then due within 7 days, then clean.
-4. For anything breached, draft the fix the operator can approve: the record to update, the notice to send (draft to `drafts/`, never send), or the task to add.
-5. If a rule in `docs/compliance.md` is out of date, say so and stop. Do not guess at law. The operator confirms the rule, then you update the doc and the check together.
+# compliance
 
-Nothing here is legal advice. The doc records the rules the operator has told the system to enforce, with sources, and this command checks the data against them.
+Read CLAUDE.md first. Check recorded privacy evidence and house rules.
+
+Run `node scripts/knowledge.mjs compliance`. Replace placeholders with the operator's supplied values; quote names and text as single arguments. Add `--json` to read structured results. Run `help` if any argument is unclear.
+
+Read the article and its history before any change. Never invent a name, evidence, review decision, date or resolution. If a match is ambiguous, show the candidate IDs. For writes, use the operator's actor label and confirm the intended record from the read result. An actor label is not authenticated identity.
+
+Separate legal record checks from house rules. Include the cited source and the missing evidence. A clean report is not legal certification.

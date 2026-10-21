@@ -1,0 +1,19 @@
+insert into collections(id,name) values ('10000000-0000-4000-8000-000000000001','Demo Service Handbook') on conflict do nothing;
+insert into authors(id,name,active) values ('20000000-0000-4000-8000-000000000001','Aroha Patel',true),('20000000-0000-4000-8000-000000000002','Ben Walker',true),('20000000-0000-4000-8000-000000000003','Casey Former',false) on conflict do nothing;
+insert into articles(id,collection_id,external_id,title,category,owner_id,status,review_due,privacy_class,purpose,retention_review,privacy_checked_at,views,thumbs_up,thumbs_down,approved_revision) values
+('30000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','demo-1','Returns approval steps','Customer service','20000000-0000-4000-8000-000000000001','active',current_date-14,'none','',null,null,860,32,18,1),
+('30000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000001','demo-2','Customer escalation contacts','Customer service','20000000-0000-4000-8000-000000000003','active',current_date-40,'personal','Escalation ownership',current_date-5,null,440,10,8,null),
+('30000000-0000-4000-8000-000000000003','10000000-0000-4000-8000-000000000001','demo-3','Dispatch cut-off times','Warehouse','20000000-0000-4000-8000-000000000002','ready',current_date+30,'none','',null,null,590,20,5,null),
+('30000000-0000-4000-8000-000000000004','10000000-0000-4000-8000-000000000001','demo-4','Warranty evidence checklist','Customer service',null,'draft',null,'unknown','',null,null,95,0,0,null),
+('30000000-0000-4000-8000-000000000005','10000000-0000-4000-8000-000000000001','demo-5','Trade account setup','Accounts','20000000-0000-4000-8000-000000000001','active',current_date+45,'none','',null,null,300,15,1,1),
+('30000000-0000-4000-8000-000000000006','10000000-0000-4000-8000-000000000001','demo-6','Old customer contact list','Accounts','20000000-0000-4000-8000-000000000002','archived',current_date-100,'personal','',current_date-60,null,0,0,0,null) on conflict do nothing;
+insert into revisions(article_id,version,body,editor,note)
+select id,1,case external_id when 'demo-1' then 'Record the order reference and reason. Ask the service lead to approve a return before booking freight.' when 'demo-2' then 'Fictional demo: the service lead owns unresolved requests. Replace former contacts before using this article.' when 'demo-3' then 'Orders approved before noon enter the afternoon dispatch list. Confirm the carrier collection before promising a delivery date.' when 'demo-4' then '' when 'demo-5' then 'Collect the business trading name and delivery details. Accounts records its approval before an order is released.' else 'Fictional retired contact notes awaiting a retention decision.' end,'Demo editor','Fictional starting revision'
+from articles where external_id like 'demo-%' on conflict do nothing;
+insert into reviews(id,article_id,version,reviewer,decision,evidence) values
+('40000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001',1,'Ben Walker','approved','Demo procedure checked against service handbook'),
+('40000000-0000-4000-8000-000000000002','30000000-0000-4000-8000-000000000005',1,'Ben Walker','approved','Demo account checklist verified') on conflict do nothing;
+insert into feedback(id,article_id,note,priority,created_at) values
+('50000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','Who approves a damaged delivery return?','urgent',now()-interval '12 days'),
+('50000000-0000-4000-8000-000000000002','30000000-0000-4000-8000-000000000002','This contact left the team.','urgent',now()-interval '20 days') on conflict do nothing;
+insert into searches(id,phrase,hits,searched_at) values ('60000000-0000-4000-8000-000000000001','damaged delivery',0,now()-interval '2 days'),('60000000-0000-4000-8000-000000000002','damaged delivery',0,now()-interval '1 day'),('60000000-0000-4000-8000-000000000003','returns',1,now()-interval '1 day') on conflict do nothing;

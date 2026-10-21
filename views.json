@@ -6,7 +6,7 @@
     "sections": [
       {
         "title": "Needs attention",
-        "sql": "select * from attention order by priority,title"
+        "sql": "select title,owner,reason,priority from attention order by priority,title,reason"
       },
       {
         "title": "Review queue",

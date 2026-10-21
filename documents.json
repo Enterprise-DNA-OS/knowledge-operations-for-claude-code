@@ -7,7 +7,11 @@
     "sections": [
       {
         "title": "Control record",
-        "sql": "select * from article_register where id=$1"
+        "sql": "select title,collection,category,owner,status,revision,review_due from article_register where id=$1"
+      },
+      {
+        "title": "Privacy and approval",
+        "sql": "select privacy_class,purpose,retention_review,privacy_checked_at,approved_revision from articles where id=$1"
       },
       {
         "title": "Revision text",
